@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pablo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<style>
+    body {
+        background-image: url('pablo.png');
+        background-size: cover; 
+        background-position: center; 
+        background-attachment: fixed; 
+    }
+    
+    .card {
+        width: 93px;
+        height: 145px;
+        perspective: 1000px;
+        position: absolute;
+        animation: dealAnimation 0.6s ease; /* Apply dealing animation */
+    }
+    
+    #player1 .card {
+        top: 10%;
+        left: 10%;
+    }
+
+    #player2 .card {
+        bottom: 10%;
+        right: 10%;
+    }
+
+    @keyframes dealAnimation {
+        0% {
+            transform: translateY(-1000px) rotateY(90deg); /* Initial position for animation */
+        }
+        100% {
+            transform: translate(-50%, -50%); /* Final position for animation */
+        }
+    }
+    #cardContainer {
+        display: flex;
+        justify-content: space-between; /* Distribute space between cards */
+        margin: 0 auto; /* Center align the cards */
+        width: 80%; /* Adjust the width of the card container */
+    }
+
+    .card-inner {
+        width: 100%;
+        height: 100%;
+        transition: transform 0.6s;
+        transform-style: preserve-3d;
+    }
+
+    .card:hover .card-inner {
+        transform: rotateY(180deg);
+    }
+
+    .card-front, .card-back {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        overflow: hidden;
+        backface-visibility: hidden;
+    }
+    .card-front img, .card-back img {
+        width: 93px;
+        height: auto;
+    }
+
+    .card-back {
+        transform: rotateY(180deg);
+    }
+    .thrown-card {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    #thrownCardsContainer {
+        position: relative;
+        width: 100%;
+        height: 100%;
+    }
+
+</style>
+</head>
+<body>
+<div id="player1" class="player"></div>
+<div id="player2" class="player"></div>
+<div id="deck" class="deck"></div>
+<div id="cardContainer"></div>
+
+<script>
+    // Array of card image paths
+    const cardImages = ["1.png", "2.png", "3.png", "4.png", "5.png", "6.png", "7.png", "8.png", "9.png", "10.png", "-1.png", "+20.png", "Switch.png", "taych.png", "Toured.png"]; // Add more paths if needed
+    const cardValues = {
+"1.png": 1,
+"2.png": 2,
+"3.png": 3,
+"4.png": 4,
+"5.png": 5,
+"6.png": 6,
+"7.png": 7,
+"8.png": 8,
+"9.png": 9,
+"10.png": 10,
+"-1.png": -1, // Assuming this card is worth 10
+"+20.png": 20,
+"switch.png":0,
+"taych.png":0,
+"tourd.png":0
+
+
+// Add more cards as needed
+};
+
+
+    // Function to generate card HTML dynamically
+    function generateplayer1(imagePath, index) {
+const cardWidth = 93; // Width of each card
+const margin = 10; // Margin between cards
+const leftPosition = index * (cardWidth + margin) + 40; // Calculate left position with margin and additional left offset
+return `
+    <div class="card" style="top: 0%; left: ${leftPosition}px;">
+        <div class="card-inner">
+            <div class="card-front">
+                <img src="card.png" alt="Front of the card">
+            </div>
+            <div class="card-back">
+                <img src="${imagePath}" alt="Back of the card">
+            </div>
+        </div>
+    </div>
+`;
+}
+
+    // Function to shuffle an array
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    // Get card container element
+    const cardContainer = document.getElementById("cardContainer");
+    var sum=0;
+
+    // Generate HTML for each card and duplicate them
+    shuffleArray(cardImages).slice(0, 4).forEach((imagePath, index) => { // Shuffle the array and select first 8 images
+        cardContainer.innerHTML += generateplayer1(imagePath, index);
+    });
+function generateplayer2(imagePath, index) {
+    const cardWidth = 93; // Width of each card
+    const margin = 10; // Margin between cards
+    const rightPosition = index * (cardWidth + margin) + 30; // Calculate left position with margin and additional left offset
+    return `
+        <div class="card" style="top: 80%; right: ${rightPosition}px;">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="card.png" alt="Front of the card">
+                </div>
+                <div class="card-back">
+                    <img src="${imagePath}" alt="Back of the card">
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+        // Function to shuffle an array
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Get card container element
+        const cardContainer1 = document.getElementById("cardContainer");
+
+        let totalSum = 0;
+
+// Shuffle the array and select first 8 images
+shuffleArray(cardImages).slice(0, 4).forEach((imagePath, index) => {
+// Generate HTML for each card
+const cardHTML = generateplayer2(imagePath, index);
+
+// Add the card HTML to the card container
+cardContainer1.innerHTML += cardHTML;
+
+// Calculate the sum for the current image
+const imageSum = cardValues[imagePath];
+
+// Add the current image sum to the total sum
+totalSum += imageSum;
+});
+console.log(`Total sum of all images: ${totalSum}`);
+        // Function to generate card HTML dynamically
+        function generateplayer3(imagePath, index) {
+const cardWidth = 93; // Width of each card
+const margin = 10; // Margin between cards
+const rightPosition = index * (cardWidth + margin) + 30; // Calculate left position with margin and additional left offset
+return `
+    <div class="card" style="top: 0%; right: ${rightPosition}px;">
+        <div class="card-inner">
+            <div class="card-front">
+                <img src="card.png" alt="Front of the card">
+            </div>
+            <div class="card-back">
+                <img src="${imagePath}" alt="Back of the card">
+            </div>
+        </div>
+    </div>
+`;
+}
+
+    // Function to shuffle an array
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    // Get card container element
+    const cardContainer2 = document.getElementById("cardContainer");
+    var sum=0;
+
+    // Generate HTML for each card and duplicate them
+    shuffleArray(cardImages).slice(0, 4).forEach((imagePath, index) => { // Shuffle the array and select first 8 images
+        cardContainer.innerHTML += generateplayer3(imagePath, index);
+    });
+    function generateplayer4(imagePath, index) {
+const cardWidth = 93; // Width of each card
+const margin = 10; // Margin between cards
+const leftPosition = index * (cardWidth + margin) + 40; // Calculate left position with margin and additional left offset
+return `
+    <div class="card" style="bottom: 0%; left: ${leftPosition}px;">
+        <div class="card-inner">
+            <div class="card-front">
+                <img src="card.png" alt="Front of the card">
+            </div>
+            <div class="card-back">
+                <img src="${imagePath}" alt="Back of the card">
+            </div>
+        </div>
+    </div>
+`;
+}
+
+    // Function to shuffle an array
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    // Get card container element
+    const cardContainer3 = document.getElementById("cardContainer");
+    var sum=0;
+
+    // Generate HTML for each card and duplicate them
+    shuffleArray(cardImages).slice(0, 4).forEach((imagePath, index) => { // Shuffle the array and select first 8 images
+        cardContainer.innerHTML += generateplayer4(imagePath, index);
+    });
+function generatedeck(imagePath, index) {
+const cardWidth = 93; // Width of each card
+const margin = 10; // Margin between cards
+const leftPosition = index * (cardWidth + margin) + 40; // Calculate left position with margin and additional left offset
+return `
+    <div class="card" style="top: 50%; left:55%; transform: translate(-50%, -50%);">
+        <div class="card-inner">
+            <div class="card-front">
+                <img src="card.png" alt="Front of the card">
+            </div>
+            <div class="card-back">
+                <img src="${imagePath}" alt="Back of the card">
+            </div>
+        </div>
+    </div>
+`;
+}
+
+        // Function to shuffle an array
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Get card container element
+        const cardContainerstack = document.getElementById("cardContainer");
+
+        // Generate HTML for each card and duplicate them
+        shuffleArray(cardImages).slice(0, 4).forEach((imagePath, index) => { // Shuffle the array and select first 8 images
+            cardContainerstack.innerHTML += generatedeck(imagePath, index);
+        });
+        function throwCard(playerHand, pile, cardIndex, player) {
+var card = playerHand[cardIndex];
+pile.push(card);
+playerHand.splice(cardIndex, 1);
+
+// Generate HTML for the thrown card
+var thrownCardHTML = generateThrownCardHTML(card);
+
+// Append the thrown card to the document
+document.body.innerHTML += thrownCardHTML;
+}
+
+// Function to throw a card from a player's hand
+function throwCard(playerHandSelector) {
+const playerHand = document.querySelectorAll(playerHandSelector);
+if (playerHand.length > 0) {
+    const thrownCard = playerHand[0];
+    thrownCard.remove();
+    // Generate HTML for the thrown card
+    const thrownCardHTML = generateThrownCardHTML(thrownCard.querySelector('.card-back img').src);
+    // Append the thrown card to the thrown cards container
+    const thrownCardsContainer = document.getElementById('thrownCardsContainer');
+    thrownCardsContainer.innerHTML += thrownCardHTML;
+} else {
+    window.alert("No cards to throw.");
+}
+}
+
+// Function to generate HTML for the thrown card
+function generateThrownCardHTML(imagePath) {
+return `
+    <div class="thrown-card">
+        <div class="card-inner">
+            <div class="card-front">
+                <img src="card.png" alt="Front of the card">
+            </div>
+            <div class="card-back">
+                <img src="${imagePath}" alt="Back of the card">
+            </div>
+        </div>
+    </div>
+`;
+}
+
+
+    </script>
+   <i class="fa-solid fa-gear"></i>
+   <style>
+    .fa-gear {
+        font-size:30px;
+        color: #ffffff;
+        position:absolute;
+        top: 5px;;
+        left:5px;
+        cursor:pointer;
+
+    }
+    </style>
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+          <span class="close">&times;</span>
+          <p>Settings</p>
+          <audio autoplay id="myAudio" src="spotifydown.com - Game Music.mp3"></audio>
+          <label for="audioControl">Music:</label>
+    <input type="checkbox" id="audioControl" checked>
+          
+        </div>
+      </div>
+      <style>
+.modal {
+    font-weight:bolder;
+  display: none; 
+  position: fixed; 
+  z-index: 1; 
+  padding-top: 100px; 
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%; 
+  overflow: auto; 
+  background-color: rgb(0,0,0); 
+  background-color: rgba(0,0,0,0.4); 
+  
+}
+
+.modal-content {
+border-radius:8px;
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+</style>
+<script>
+var modal = document.getElementById("myModal");
+
+var btn = document.getElementsByClassName("fa-gear")[0];
+
+var span = document.getElementsByClassName("close")[0];
+
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
+</script>
+<script>
+    var audio = document.getElementById("myAudio");
+var audioControl = document.getElementById("audioControl");
+
+audioControl.onchange = function() {
+  if (audioControl.checked) {
+    audio.play();
+  } else {
+    audio.pause();
+  }
+}
+var audio = document.getElementById("myAudio");
+
+        // Function to play audio
+        function playAudio() {
+            audio.play();
+        }
+
+        // Listen for audio end event
+        audio.addEventListener('ended', function() {
+            // Restart audio playback
+            playAudio();
+        });
+
+        // Play audio when the page loads
+        playAudio();
+</script>
+</script>
+<button id="player1-Add-card">Add Card</button>
+<button id="player2-Add-card">Add Card</button>
+<button id="player1-call">Call</button>
+<button id="player2-call">Call</button>
+<button id="player3-Add-card">Add Card</button>
+<button id="player4-Add-card">Add Card</button>
+<button id="player3-call">Call</button>
+<button id="player4-call">Call</button>
+
+<style>
+    #player1-throw-card, #player2-throw-card, #player1-Add-card, #player2-Add-card,#player1-call,#player2-call,#player3-Add-card,#player4-Add-card,#player3-call,#player4-call,#player3-throw-card,#player4-throw-card{
+        background-color: transparent;
+        border-color: white;
+
+        height:57px;
+        border-radius:20px;
+        font-size: 20px;
+        font-weight: bolder;
+        color: white;
+        position: absolute;
+        cursor: pointer;
+        border-width: 3px;
+    }
+    #player3-throw-card{
+        top:170px;
+        right:150px;
+    }
+    #player3-Add-card{
+        top:170px;
+        right:30px;
+    }
+    #player3-call{
+        top:170px;
+        right:300px;
+    }
+    #player4-throw-card{
+        bottom:170px;
+        left:150px;
+    }
+    #player4-Add-card{
+        bottom:170px;
+        left:30px;
+    }
+    #player4-call{
+        bottom:170px;
+        left:300px;
+    }
+
+    #player1-throw-card{
+        top:170px;
+        left:150px;
+    }
+    #player1-Add-card{
+        top:170px;
+        left:30px;
+    }
+    #player2-throw-card{
+        bottom:170px;
+        right:150px;
+    }
+    #player2-Add-card{
+        bottom:170px;
+        right:30px;
+    }
+    #player1-call{
+        top:170px;
+        left:300px;
+    }
+    #player2-call{
+        bottom: 170px;
+        right: 300px;
+    }
+    #sum{
+        color:white;
+
+    }
+
+
+</style>
+<button id="player1-throw-card" onclick="throwCard('#player1 .card')">Throw Card</button>
+<button id="player2-throw-card" onclick="throwCard('#player2 .card')">Throw Card</button>
+<button id="player3-throw-card" onclick="throwCard('#player3 .card')">Throw Card</button>
+<button id="player4-throw-card" onclick="throwCard('#player4 .card')">Throw Card</button>
+    
+    
+</body>
+</html>
